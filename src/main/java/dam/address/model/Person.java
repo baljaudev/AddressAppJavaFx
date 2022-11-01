@@ -1,4 +1,4 @@
-package com.example.agenda.model;
+package dam.address.model;
 
 import java.time.LocalDate;
 

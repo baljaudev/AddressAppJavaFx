@@ -3,6 +3,8 @@ module com.example.agenda {
     requires javafx.fxml;
 
 
-    opens com.example.agenda to javafx.fxml;
-    exports com.example.agenda;
+    opens dam.address to javafx.fxml;
+    exports dam.address;
+    exports dam.address.controller;
+    opens dam.address.controller to javafx.fxml;
 }
