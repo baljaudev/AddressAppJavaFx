@@ -9,7 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class AgendaApplication extends Application {
+public class MainApp extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
 
@@ -30,7 +30,7 @@ public class AgendaApplication extends Application {
         try {
             // Cargamos el layout raíz desde el fichero fxml:
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(AgendaApplication.class.getResource("RootLayout.fxml"));
+            loader.setLocation(MainApp.class.getResource("RootLayout.fxml"));
             rootLayout = loader.load();
 
             //Muestra la escena que contiene el layout raíz:
@@ -49,7 +49,7 @@ public class AgendaApplication extends Application {
         try {
             // Carga el fichero fxml que le pasemos por parámetro. Debemos referirnos al Pane que tiene:
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(AgendaApplication.class.getResource("PersonOverview.fxml"));
+            loader.setLocation(MainApp.class.getResource("PersonOverview.fxml"));
             AnchorPane personOverview = loader.load();
 
             //Establece el fxml de PersonOverview en el centro del layout raíz:
