@@ -4,9 +4,9 @@ import dam.address.model.Person;
 import dam.address.MainApp;
 import dam.address.util.DateUtil;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+
+import java.util.Optional;
 
 public class PersonOverviewController {
     private MainApp mainApp;
@@ -89,5 +89,28 @@ public class PersonOverviewController {
             birthdayLabel.setText("");
         }
     }
+
+    /**
+     * Método llamado cuando se hace clic en el botón 'delete'
+     */
+    @FXML
+    private void handleDeletePerson() {
+        //Mostramos la ventana emergente con el mensaje de confirmación para cerrar la aplicación:
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        //Título de la ventana emergente para cerrar la aplicación:
+        alert.setTitle("Borrar persona");
+        //Quita el título cabecera de la ventana:
+        alert.setHeaderText(null);
+        //Mensaje a mostrar en la ventana emergente de la aplicación:
+        alert.setContentText("¿Desea cerrar la aplicación?");
+        //Objeto para capturar el evento de si confirma el borrado de ventana o cancela:
+        Optional<ButtonType> result = alert.showAndWait();
+        //Si se ha pulsado el botón "Aceptar":
+        if (result.get() == ButtonType.OK){
+            int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
+            personTable.getItems().remove(selectedIndex);
+        }
+    }
+
 
 }
