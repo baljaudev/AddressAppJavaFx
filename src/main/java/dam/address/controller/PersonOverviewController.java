@@ -123,5 +123,48 @@ public class PersonOverviewController {
 
     }
 
+    /**
+     * Método llamado cuando el usuario clica en el botón 'New'
+     * Abre una ventana para editar los detalles de la nueva persona
+     */
+    @FXML
+    private void handleNewPerson() {
+        //Crea una nueva persona
+        Person tempPerson = new Person();
+        //Pasa esos datos al stage nuevo en el main
+        boolean okClicked = mainApp.showPersonEditDialog(tempPerson);
+        //Si se clicó 'OK' guarda y añade una nueva persona
+        if (okClicked) {
+            mainApp.getPersonData().add(tempPerson);
+        }
+    }
+
+    /**
+     * Método llamado cuando el usuario clica en el botón 'Edit'
+     * y abre la ventana para editar los campos
+     */
+    @FXML
+    private void handleEditPerson() {
+        //Guarda los datos de la persona seleccionada
+        Person selectedPerson = personTable.getSelectionModel().getSelectedItem();
+        //Si no son nulos, se los pasa al stage de edición del main
+        if (selectedPerson != null) {
+            boolean okClicked = mainApp.showPersonEditDialog(selectedPerson);
+            //Si pulsó el botón 'OK' muestra los detalles de esa persona en la tabla
+            if (okClicked) {
+                showPersonDetails(selectedPerson);
+            }
+
+        } else {
+            // No se seleccionó persona
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.initOwner(mainApp.getPrimaryStage());
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a person in the table.");
+
+            alert.showAndWait();
+        }
+    }
 
 }

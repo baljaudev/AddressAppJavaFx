@@ -1,7 +1,9 @@
 package dam.address;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import dam.address.controller.PersonEditDialogController;
 import dam.address.controller.PersonOverviewController;
 import dam.address.model.Person;
 import javafx.application.Application;
@@ -11,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
@@ -87,6 +90,46 @@ public class MainApp extends Application {
             controller.setMainApp(this);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Abre el stage de edición con los datos de la persona seleccionada.
+     * Si el usuario hace clic en 'OK', los cambios se guardan en dicha persona
+     *
+     * @param person el objeto persona que será editado
+     * @return true si el usuario hizo clic en 'OK'
+     */
+    public boolean showPersonEditDialog(Person person) {
+        try {
+            // Carga del fxml
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("PersonEditDialog.fxml"));
+            AnchorPane page = loader.load();
+
+            // Creación del stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Person");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Asigna el controlador
+            PersonEditDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            // Le pasa la persona seleccionada al controlador
+            controller.setPerson(person);
+            // Muestra la ventana y espera hasta que el usuario la cierre
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Archivo no encontrado");
+            return false;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
