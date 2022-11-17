@@ -8,16 +8,22 @@ import dam.address.controller.PersonEditDialogController;
 import dam.address.controller.PersonOverviewController;
 import dam.address.controller.RootLayoutController;
 import dam.address.model.Person;
+import dam.address.model.PersonListWrapper;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.util.prefs.Preferences;
 
 public class MainApp extends Application {
@@ -173,10 +179,70 @@ public class MainApp extends Application {
         }
     }
 
+    /**
+     * Guarda los datos de personas actuales al archivo especificado.
+     * @param file
+     */
     public void savePersonDataToFile(File file) {
+        try {
+            //Instancia de un jaxb para que coja la estructura que hemos establecido
+            JAXBContext context = JAXBContext.newInstance(PersonListWrapper.class);
+            // Instancia de un marshaller para meter datos en el XML
+            Marshaller m = context.createMarshaller();
+            // Configuramos el marshaller para meter datos en el XML
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            // Utilizamos el envoltorio para establecer dónde guardar los datos
+            PersonListWrapper wrapper = new PersonListWrapper();
+            wrapper.setPersons(personData);
+
+            // Escribimos los datos XML en el fichero
+            m.marshal(wrapper, file);
+
+            // Guarda la ruta del archivo
+            setPersonFilePath(file);
+
+        } catch (Exception e) {
+            e.printStackTrace();// captura cualquier excepción
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not save data from file:\n" + file.getPath());
+            alert.showAndWait();
+        }
     }
 
+    /**
+     * Carga los datos de las personas del archivo XML especificado.
+     * Los datos actuales serán reemplazados, en caso de haberlos.
+     *
+     * @param file
+     */
     public void loadPersonDataFromFile(File file) {
+        try {
+            //Instancia de un jaxb para que coja la estructura que hemos establecido
+            JAXBContext context = JAXBContext.newInstance(PersonListWrapper.class);
+            // Instancia de un marshaller para sacar datos en el XML
+            Unmarshaller um = context.createUnmarshaller();
+
+            // Utilizamos el envoltorio para establecer dónde sacar los datos
+            PersonListWrapper wrapper = (PersonListWrapper) um.unmarshal(file);
+            //Limpia la tabla
+            personData.clear();
+            // Y añade esos datos recuperados en la tabla
+            personData.addAll(wrapper.getPersons());
+
+            // Guarda la ruta del archivo
+            setPersonFilePath(file);
+
+        } catch (Exception e) {
+            e.printStackTrace();// captura cualquier excepción
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not load data from file:\n" + file.getPath());
+            alert.showAndWait();
+        }
 
     }
 

@@ -2,6 +2,7 @@ package dam.address.model;
 
 import java.time.LocalDate;
 
+import dam.address.util.LocalDateAdapter;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -9,7 +10,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-    public class Person {
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+public class Person {
 
         private final StringProperty firstName;
         private final StringProperty lastName;
@@ -102,6 +105,7 @@ import javafx.beans.property.StringProperty;
             return city;
         }
 
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         public LocalDate getBirthday() {
             return birthday.get();
         }
