@@ -1,6 +1,7 @@
 module com.example.agenda {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.prefs;
 
 
     opens dam.address to javafx.fxml;

@@ -1,10 +1,12 @@
 package dam.address;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import dam.address.controller.PersonEditDialogController;
 import dam.address.controller.PersonOverviewController;
+import dam.address.controller.RootLayoutController;
 import dam.address.model.Person;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -16,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import java.util.prefs.Preferences;
 
 public class MainApp extends Application {
     private static final String LOGO = "file:src/main/resources/dam/address/images/AddressIcon.png";
@@ -71,9 +74,20 @@ public class MainApp extends Application {
             //Muestra la escena que contiene el layout raíz:
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
+
+            // Le da al controlador acceso a la clase ejecutable
+            RootLayoutController controller = loader.getController();
+            controller.setMainApp(this);
+
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        // Try to load last opened person file.
+        File file = getPersonFilePath();
+        if (file != null) {
+            loadPersonDataFromFile(file);
         }
     }
 
@@ -136,6 +150,37 @@ public class MainApp extends Application {
             throw new RuntimeException(e);
         }
     }
+
+    public void setPersonFilePath(File file) {
+        Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+        if (file != null) {
+            prefs.put("filePath", file.getPath());
+
+            // Actualiza el título de la aplicación.
+            primaryStage.setTitle("AddressApp - " + file.getName());
+        } else {
+            prefs.remove("filePath");
+        }
+    }
+
+    public File getPersonFilePath() {
+        Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+        String filePath = prefs.get("filePath", null);
+        if (filePath != null) {
+            return new File(filePath);
+        } else {
+            return null;
+        }
+    }
+
+    public void savePersonDataToFile(File file) {
+    }
+
+    public void loadPersonDataFromFile(File file) {
+
+    }
+
+
 
     public Stage getPrimaryStage() {
         return primaryStage;
